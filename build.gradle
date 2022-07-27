@@ -1,0 +1,44 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.2'
+	id 'io.spring.dependency-management' version '1.0.12.RELEASE'
+	id 'java'
+}
+
+group = 'com.garit'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// web - tomcat, webmvc 라이브러리를 가져옴
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// mysql & jpa
+	runtimeOnly 'mysql:mysql-connector-java'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// devtools - reloading 가능
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// h2 - test 용 메모리 DB를 사용하기 위함
+	runtimeOnly 'com.h2database:h2'
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
