@@ -21,6 +21,20 @@ spring:
       hibernate:
         format_sql: true
 
+  redis:
+    host: ${secrets.PROD_REDIS_HOST}
+    port: ${secrets.PROD_REDIS_PORT}
+
+
+jwt:
+  secret-key: ${secrets.PROD_JWT_SECRET_KEY}
+  access-token-expire-time: ${secrets.RPOD_JWT_ACCESS_TOKEN_EXPIRE_TIME}
+  refresh-token-expire-time: ${secrets.RPOD_JWT_REFRESH_TOKEN_EXPIRE_TIME}
+  refresh-token-reissue-time: ${secrets.RPOD_JWT_REFRESH_TOKEN_REISSUE_TIME}
+  access-token-header-name: ${secrets.RPOD_JWT_ACCESS_TOKEN_HEADER_NAME}
+  refresh-token-header-name: ${secrets.RPOD_JWT_REFRESH_TOKEN_HEADER_NAME}
+  member-id-header-name: ${secrets.RPOD_MEMBER_ID_HEADER_NAME}
+
 logging:
   level:
     org.hibernate.SQL: debug
