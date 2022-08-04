@@ -16,7 +16,7 @@ public enum BaseResponseStatus {
     DATABASE_ERROR(false, 4000, "데이터베이스 연결에 실패하였습니다."),
     REDIS_ERROR(false, 4001, "Redis 연결에 실패했습니다."),
     IO_EXCEPTION(false, 4002, "IOException이 발생했습니다."),
-
+    SMS_ERROR(false, 4003, "sms로 인증번호를 전송하는데 실패했습니다."),
 
     /**
      * 4100 :  JWT 토큰 관련 에러

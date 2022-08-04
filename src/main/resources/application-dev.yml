@@ -39,6 +39,11 @@ kakao:
   client-id: ${secrets.DEV_KAKAO_CLIENT_ID}
   redirect-uri: ${secrets.DEV_KAKAO_REDIRECT_URI}
 
+sms:
+  service-id: ${secrets.DEV_SMS_SERVICE_ID}
+  access-key: ${secrets.DEV_SMS_ACCESS_KEY}
+  secret-key: ${secrets.DEV_SMS_SECRET_KEY}
+
 logging:
   level:
     org.hibernate.SQL: debug

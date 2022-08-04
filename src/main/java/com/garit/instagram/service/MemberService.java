@@ -32,6 +32,7 @@ public class MemberService {
     private final Random random;
     private final RedisService redisService;
     private final OAuthService oAuthService;
+    private final SmsService smsService;
 
     @Value("${jwt.access-token-header-name}")
     private String ACCESS_TOKEN_HEADER_NAME;
@@ -159,14 +160,15 @@ public class MemberService {
      */
     public void sendAuthNum(String phoneNumber) throws BaseException {
         try{
-            // 이메일 중복 검사
+            // 휴대폰 번호 중복 검사
             if(isExistPhoneNumber(phoneNumber)){
                 throw new BaseException(ALREADY_EXIST_PHONE_NUMBER);
             }
 
             // 인증번호 전송
             String authNum = createRandomAuthNum(phoneNumber);
-            //smsService.smsSend();
+            String content = "[Instagram] 6자리 인증번호 ["+authNum+"] 입력해주세요.";
+            smsService.sendSms(phoneNumber, content);
 
             // 인증번호 Redis에 저장
             redisService.setSignupAuthNumInRedis(phoneNumber, authNum);
@@ -195,7 +197,7 @@ public class MemberService {
      */
     public void checkAuthNum(String phoneNumber, String authNum) throws BaseException{
         try{
-            // 이메일 중복 검사
+            // 휴대폰 번호 중복 검사
             if(isExistPhoneNumber(phoneNumber)){
                 throw new BaseException(ALREADY_EXIST_PHONE_NUMBER);
             }
