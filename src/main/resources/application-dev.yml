@@ -35,6 +35,9 @@ jwt:
   refresh-token-header-name: ${secrets.DEV_JWT_REFRESH_TOKEN_HEADER_NAME}
   member-id-header-name: ${secrets.DEV_MEMBER_ID_HEADER_NAME}
 
+kakao:
+  client-id: ${secrets.DEV_KAKAO_CLIENT_ID}
+  redirect-uri: ${secrets.DEV_KAKAO_REDIRECT_URI}
 
 logging:
   level:

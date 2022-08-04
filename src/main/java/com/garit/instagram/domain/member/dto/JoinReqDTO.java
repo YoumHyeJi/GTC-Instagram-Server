@@ -23,6 +23,8 @@ public class JoinReqDTO {
     @Pattern(regexp = "^(BASIC|KAKAO)$", message = "INVALID_LOGIN_TYPE_FORM")
     private String loginType;
 
+    private String kakaoAccessToken;
+
     @NotBlank(message = "NOT_EXIST_JOIN_REQ_DTO")
     @Pattern(regexp = "^[0-9]{3,11}$", message = "INVALID_PHONE_NUMBER_FORM")
     private String phoneNumber;
@@ -35,7 +37,6 @@ public class JoinReqDTO {
     @Pattern(regexp = "^[a-z0-9_.]{3,20}$", message = "INVALID_USERNAME_FORM")
     private String username;
 
-    @NotBlank(message = "NOT_EXIST_JOIN_REQ_DTO")
     @Pattern(regexp = "^(?=.*[@$!%*#?&])[A-Za-z0-9@$!%*#?&]{6,20}$", message = "INVALID_PWD_FORM")
     private String password;
 

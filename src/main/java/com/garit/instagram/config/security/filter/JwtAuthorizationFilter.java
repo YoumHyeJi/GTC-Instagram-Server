@@ -50,7 +50,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         /**
          * guest 권한이 필요한 요청인 경우
          */
-        if (request.getRequestURI().startsWith("/role-guest/api")){
+        if (request.getRequestURI().startsWith("/role-guest/api") || request.getRequestURI().startsWith("/favicon.ico")){
             log.info("guest 권한이 필요한 주소가 요청이 됨 => " + request.getRequestURI());
             chain.doFilter(request, response);
             return;
@@ -59,6 +59,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         /**
          * member 혹은 admin 권한이 필요한 요청인 경우
          */
+        log.info("member 혹은 admin 권한이 필요한 주소가 요청이 됨 => " + request.getRequestURI());
         // 헤더에서 userId와 jwtAccessToken 받아오기
         String memberId = request.getHeader(MEMBER_ID_HEADER_NAME);
         String jwtAccessToken = jwtService.getJwtAccessToken(request);

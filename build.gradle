@@ -52,7 +52,11 @@ dependencies {
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis'
 	implementation group: 'io.lettuce', name: 'lettuce-core'
 
+	// gson
+	implementation 'com.google.code.gson:gson:2.8.7'
 
+	// httpclient
+	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.12'
 
 }
 

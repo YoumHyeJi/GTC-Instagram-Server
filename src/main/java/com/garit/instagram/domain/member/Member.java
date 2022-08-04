@@ -19,6 +19,9 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
+    @Column(name = "kakao_member_id", unique = true)
+    private Long kakakoMemberId;
+
     @Enumerated(value = EnumType.STRING)
     @Column(name = "login_type")
     @NotNull
@@ -90,9 +93,10 @@ public class Member extends BaseEntity {
     /**
      * 생성 메서드
      */
-    public static Member createMember(LoginType loginType, String password, String name, String username, String phoneNumber, LocalDate birthDate){
+    public static Member createMember(LoginType loginType, Long kakaoMemberId, String password, String name, String username, String phoneNumber, LocalDate birthDate){
         Member member = new Member();
         member.loginType = loginType;
+        member.kakakoMemberId = kakaoMemberId;
         member.role = MemberRole.ROLE_MEMBER;
         member.password = password;
         member.name = name;

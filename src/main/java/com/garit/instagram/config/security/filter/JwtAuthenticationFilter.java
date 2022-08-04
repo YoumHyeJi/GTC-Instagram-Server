@@ -12,6 +12,7 @@ import com.garit.instagram.domain.member.dto.LoginResDTO;
 import com.garit.instagram.service.DeviceTokenService;
 import com.garit.instagram.service.HttpResponseService;
 import com.garit.instagram.service.JwtService;
+import com.garit.instagram.service.LoginService;
 import com.garit.instagram.utils.ValidationRegex;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -44,8 +45,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final AuthenticationManager authenticationManager;
     private final HttpResponseService httpResponseService;
     private final ObjectMapper objectMapper;
-    private final JwtService jwtService;
-    private final DeviceTokenService deviceTokenService;
+    private final LoginService loginService;
 
     // /login 요청이 오면, 로그인 시도를 위해서 자동으로 실행되는 함수
 
@@ -112,34 +112,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
             Member loginMember = principalDetails.getMember();
 
-            // request로 받은 device token을 DB에 저장하기
-            deviceTokenService.createDeviceToken(loginMember, loginMember.getDeviceTokenValue());
-
-            // access token, refresh token 생성해서 헤더에 담기
-            DeviceToken deviceToken = deviceTokenService.findDeviceToken(loginMember, loginMember.getDeviceTokenValue());
-            String jwtAccessToken = jwtService.createJwtAccessToken(loginMember.getId().toString(), loginMember.getRole());
-            String jwtRefreshToken = jwtService.createJwtRefreshToken(deviceToken.getId().toString());
-
-            response.addHeader(ACCESS_TOKEN_HEADER_NAME, "Bearer " + jwtAccessToken);
-            response.addHeader(REFRESH_TOKEN_HEADER_NAME, "Bearer " + jwtRefreshToken);
-
-            // 성공 메시지 리턴하기
-            LoginResDTO loginResDTO = LoginResDTO.builder()
-                    .memberId(loginMember.getId())
-                    .loginType(loginMember.getLoginType().name())
-                    .role(loginMember.getRole().name())
-                    .username(loginMember.getUsername())
-                    .name(loginMember.getName())
-                    .phoneNumber(loginMember.getPhoneNumber())
-                    .email(loginMember.getEmail())
-                    .birthDate(loginMember.getBirthDate())
-                    .age(loginMember.getAge())
-                    .profilePhoto(loginMember.getProfilePhoto())
-                    .website(loginMember.getWebsite())
-                    .introduce(loginMember.getIntroduce())
-                    .openStatus(loginMember.getOpenStatus().name())
-                    .memberStatus(loginMember.getMemberStatus().name())
-                    .build();
+            LoginResDTO loginResDTO = loginService.afterLoginSuccess(response, loginMember, loginMember.getDeviceTokenValue());
             httpResponseService.successRespond(response, loginResDTO);
         }
         catch (BaseException e){

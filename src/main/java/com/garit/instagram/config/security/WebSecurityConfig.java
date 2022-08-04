@@ -3,10 +3,7 @@ package com.garit.instagram.config.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.garit.instagram.config.security.filter.JwtAuthenticationFilter;
 import com.garit.instagram.config.security.filter.JwtAuthorizationFilter;
-import com.garit.instagram.service.DeviceTokenService;
-import com.garit.instagram.service.HttpResponseService;
-import com.garit.instagram.service.JwtService;
-import com.garit.instagram.service.MemberService;
+import com.garit.instagram.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +34,7 @@ public class WebSecurityConfig{
     private final HttpResponseService httpResponseService;
     private final JwtService jwtService;
     private final MemberService memberService;
-    private final DeviceTokenService deviceTokenService;
+    private final LoginService loginService;
 
     /**
      * SpringSecurity 설정
@@ -45,7 +42,9 @@ public class WebSecurityConfig{
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         log.info("WebSecurityConfig.filterChain() 호출");
+
         AuthenticationManager authenticationManager = authenticationManager(http.getSharedObject(AuthenticationConfiguration.class));
+
         // REST API 서버는 stateless하게 개발하기 때문에 사용자 정보를 Session에 저장 안함
         // jwt 토큰을 Cookie에 저장하지 않는다면, CSRF에 어느정도는 안전.
         http
@@ -56,7 +55,7 @@ public class WebSecurityConfig{
 
                 .formLogin().disable()
                 .httpBasic().disable()      // rest api 만을 고려하여 기본 설정은 해제
-                .addFilter(new JwtAuthenticationFilter(authenticationManager, httpResponseService, objectMapper, jwtService, deviceTokenService))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager, httpResponseService, objectMapper, loginService))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager, httpResponseService, jwtService, memberService))
 
                 .authorizeRequests()    // 요청에 대한 사용권한 체크

@@ -43,12 +43,25 @@ public enum BaseResponseStatus {
 
     INVALID_MEMBER_ID(false, 4207, "유효하지 않은 memberId입니다. 숫자형태로 입력해주세요."),
 
-    NOT_EXIST_JOIN_REQ_DTO(false, 4208, "loginType, phoneNumber, name, username, password, birthDate, deviceTokenValue 를 모두 입력해주세요."),
+    NOT_EXIST_JOIN_REQ_DTO(false, 4208, "loginType, phoneNumber, name, username, birthDate, deviceTokenValue 를 모두 입력해주세요."),
     INVALID_LOGIN_TYPE_FORM(false, 4209, "loginType 형식이 올바르지 않습니다. (BASIC 또는 KAKAO)"),
     INVALID_PHONE_NUMBER_FORM(false, 4210, "phoneNumber 형식이 올바르지 않습니다. (숫자 3~11자)"),
     INVALID_NAME_FORM(false, 4211, "name 형식이 올바르지 않습니다. (자유형식 1~20자)"),
     ALREADY_EXIST_USERNAME(false, 4212, "이미 존재하는 username입니다."),
     ALREADY_EXIST_PHONE_NUMBER(false, 4213, "이미 존재하는 phoneNumber입니다."),
+
+    NOT_EXIST_PHONE_NUMBER(false, 4214, "phoneNumber 를 입력해주세요."),
+    NOT_EXIST_SIGNUP_AUTH_NUM(false, 4215, "authNum 을 입력해주세요."),
+    INVALID_AUTH_NUM_FORM(false, 4216, "authNum 형식이 올바르지 않습니다. (숫자 6자리)"),
+    INVALID_AUTH_NUM(false, 4217, "해당 휴대폰 번호로 발급 받은 인증번호가 없거나, 인증번호가 일치하지 않습니다."),
+
+    NOT_EXIST_KAKAO_ACCESS_TOKEN(false, 4218, "kakaoAccessToken을 입력해주세요."),
+
+    FAIL_TO_GET_KAKAO_MEMBER_ID(false, 4219, "kakaoMemberId를 얻어오는데 실패했습니다."),
+    NEED_TO_KAKAO_SIGNUP(false, 4220, "존재하지 않는 멤버입니다. kakaoAccessToken을 이용하여 회원가입을 진행해주세요."),
+    NOT_EXIST_DEVICE_TOKEN_VALUE(false, 4221, "deviceTokenValue를 입력해주세요."),
+    NOT_EXIST_PASSWORD_IN_BASIC_SIGNUP(false, 4222, "일반 회원가입인 경우, password를 필수로 입력해야 합니다."),
+    NOT_EXIST_KAKAO_ACCESS_TOKEN_IN_KAKAO_SIGNUP(false, 4223, "kakao 소셜 회원가입인 경우, kakaoAccessToken을 필수로 입력해야 합니다."),
     ;
 
 

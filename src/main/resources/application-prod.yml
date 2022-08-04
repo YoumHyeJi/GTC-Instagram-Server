@@ -35,6 +35,10 @@ jwt:
   refresh-token-header-name: ${secrets.RPOD_JWT_REFRESH_TOKEN_HEADER_NAME}
   member-id-header-name: ${secrets.RPOD_MEMBER_ID_HEADER_NAME}
 
+kakao:
+  client-id: ${secrets.PROD_KAKAO_CLIENT_ID}
+  redirect-uri: ${secrets.PROD_KAKAO_REDIRECT_URI}
+
 logging:
   level:
     org.hibernate.SQL: debug
