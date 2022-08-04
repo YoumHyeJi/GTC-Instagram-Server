@@ -4,17 +4,17 @@ import com.garit.instagram.config.base.BaseException;
 import com.garit.instagram.config.base.BaseResponse;
 import com.garit.instagram.config.base.BaseResponseStatus;
 import com.garit.instagram.domain.member.LoginType;
-import com.garit.instagram.domain.member.dto.CheckAuthNumReqDTO;
-import com.garit.instagram.domain.member.dto.SendAuthNumReqDTO;
-import com.garit.instagram.domain.member.dto.JoinReqDTO;
-import com.garit.instagram.domain.member.dto.LoginResDTO;
+import com.garit.instagram.domain.member.dto.*;
 import com.garit.instagram.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -24,6 +24,9 @@ import static com.garit.instagram.config.base.BaseResponseStatus.NOT_EXIST_PASSW
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
+
+    @Value("${jwt.member-id-header-name}")
+    private String MEMBER_ID_HEADER_NAME;
 
     private final MemberService memberService;
 
@@ -103,5 +106,19 @@ public class MemberController {
 
     }
 
+    /**
+     * 계정 공개 여부 변경 API
+     */
+    @PatchMapping("/role-member/api/member/open-status")
+    public BaseResponse<ChangeOpenStatusResDTO> changeOpenStatus(HttpServletRequest request){
+        String memberId = request.getHeader(MEMBER_ID_HEADER_NAME);
+
+        try{
+            return new BaseResponse<>(memberService.changeOpenStatus(Long.valueOf(memberId)));
+        }
+        catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 
 }

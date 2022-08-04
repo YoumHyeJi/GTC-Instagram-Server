@@ -119,4 +119,17 @@ public class Member extends BaseEntity {
     public static Integer calculateAge(LocalDate birthDate){
         return LocalDate.now().getYear() - birthDate.getYear() + 1;
     }
+
+    public OpenStatus changeOpenStatus(){
+        // 현재 상태가 공개인 경우, 비공개로 변경
+        if (this.openStatus == OpenStatus.PUBLIC){
+            this.openStatus = OpenStatus.PRIVATE;
+            return OpenStatus.PRIVATE;
+        }
+        // 현재 상태가 비공개인 경우, 공개로 변경
+        else{
+            this.openStatus = OpenStatus.PUBLIC;
+            return OpenStatus.PUBLIC;
+        }
+    }
 }

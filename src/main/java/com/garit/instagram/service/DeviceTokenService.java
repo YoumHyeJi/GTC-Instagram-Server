@@ -8,6 +8,7 @@ import com.garit.instagram.domain.member.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.garit.instagram.config.base.BaseResponseStatus.DATABASE_ERROR;
 import static com.garit.instagram.config.base.BaseResponseStatus.NOT_EXIST_DEVICE_TOKEN;
@@ -15,9 +16,11 @@ import static com.garit.instagram.config.base.BaseResponseStatus.NOT_EXIST_DEVIC
 @Service
 @Log4j2
 @RequiredArgsConstructor
+@Transactional(rollbackFor = {Exception.class, BaseException.class})
 public class DeviceTokenService {
 
     private final DeviceTokenRepository deviceTokenRepository;
+
 
     public void createDeviceToken(Member member, String deviceTokenValue) throws BaseException {
         try{
@@ -37,6 +40,7 @@ public class DeviceTokenService {
         }
     }
 
+    @Transactional(readOnly = true)
     public boolean existsDeviceToken(Member member, String deviceTokenValue) throws BaseException {
         try{
             return deviceTokenRepository.existsDeviceTokenByMemberAndDeviceTokenValue(member, deviceTokenValue);
@@ -48,6 +52,7 @@ public class DeviceTokenService {
         }
     }
 
+    @Transactional(readOnly = true)
     public DeviceToken findDeviceToken(Member member, String deviceTokenValue) throws BaseException{
         try{
             return deviceTokenRepository.findDeviceTokenByMemberAndDeviceTokenValue(member, deviceTokenValue)

@@ -169,6 +169,10 @@ public class OAuthService {
             return kakaoMemberId;
 
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new BaseException(FAIL_TO_GET_KAKAO_MEMBER_ID);
+        } catch (Exception e){
+            e.printStackTrace();
             throw new BaseException(FAIL_TO_GET_KAKAO_MEMBER_ID);
         }
     }

@@ -24,7 +24,7 @@ public enum BaseResponseStatus {
     JWT_ERROR(false, 4100, "JWT 관련 코드 실행 중 에러가 발생했습니다."),
     NOT_EXIST_ACCESS_TOKEN_IN_HEADER(false, 4101, "'Bearer '로 시작하는 JWT Access Token을 헤더에 입력해주세요."),
     NOT_EXIST_REFRESH_TOKEN_IN_HEADER(false, 4102, "'Bearer '로 시작하는 JWT Refresh Token을 헤더에 입력해주세요."),
-    INVALID_ACCESS_TOKEN(false, 4103, "만료된 access token입니다."),
+    INVALID_ACCESS_TOKEN(false, 4103, "만료된 JWT access token입니다. JWT refresh token을 이용해서 JWT access token을 다시 발급 받으세요."),
     NOT_EXIST_ACCESS_TOKEN_SUBJECT(false, 4104, "access token에 subject가 존재하지 않습니다."),
     NOT_EQUAL_MEMBER_ID(false, 4105, "accessToken의 memberId와 header의 memberId가 일치하지 않습니다."),
 
@@ -62,6 +62,8 @@ public enum BaseResponseStatus {
     NOT_EXIST_DEVICE_TOKEN_VALUE(false, 4221, "deviceTokenValue를 입력해주세요."),
     NOT_EXIST_PASSWORD_IN_BASIC_SIGNUP(false, 4222, "일반 회원가입인 경우, password를 필수로 입력해야 합니다."),
     NOT_EXIST_KAKAO_ACCESS_TOKEN_IN_KAKAO_SIGNUP(false, 4223, "kakao 소셜 회원가입인 경우, kakaoAccessToken을 필수로 입력해야 합니다."),
+
+    ALREADY_EXIST_KAKAO_MEMBER_ID(false, 4224, "이미 회원가입이 완료된 멤버입니다. => 이미 존재하는 kakaoMemberId"),
     ;
 
 

@@ -5,6 +5,8 @@ import com.garit.instagram.domain.deviceToken.DeviceToken;
 import com.garit.instagram.domain.member.LoginType;
 import com.garit.instagram.domain.member.Member;
 import com.garit.instagram.domain.member.MemberRepository;
+import com.garit.instagram.domain.member.OpenStatus;
+import com.garit.instagram.domain.member.dto.ChangeOpenStatusResDTO;
 import com.garit.instagram.domain.member.dto.JoinReqDTO;
 import com.garit.instagram.domain.member.dto.LoginResDTO;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,7 @@ import java.util.Random;
 import static com.garit.instagram.config.base.BaseResponseStatus.*;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional(rollbackFor = {Exception.class, BaseException.class})
 @RequiredArgsConstructor
 @Log4j2
 public class MemberService {
@@ -43,6 +45,7 @@ public class MemberService {
     /**
      * memberId로 Member 엔티티 조회
      */
+    @Transactional(readOnly = true)
     public Member findMemberById(Long memberId) throws BaseException {
         try {
             return memberRepository.findMemberById(memberId)
@@ -69,9 +72,21 @@ public class MemberService {
     }*/
 
     /**
+     * 이미 존재하는 kakaoMemberId인지 확인
+     */
+    public boolean isExistKakaoMemberId(Long kakaoMemberId) throws BaseException {
+        try {
+            return memberRepository.existsByKakakoMemberId(kakaoMemberId);
+        } catch (Exception e) {
+            log.error("isExistKakaoMemberId() : memberRepository.existsByKakakoMemberId() 실행 중 데이터베이스 에러 발생");
+            e.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    /**
      * 회원가입
      */
-    @Transactional(rollbackFor = {Exception.class, BaseException.class})
     public LoginResDTO join(HttpServletResponse response, JoinReqDTO reqDTO) throws BaseException {
 
         try {
@@ -88,11 +103,15 @@ public class MemberService {
             Long kakaoMemberId = null;
             String password = null;
             // 카카오 로그인인 경우
-            if (reqDTO.getLoginType().equals(LoginType.KAKAO.name())){
+            if (reqDTO.getLoginType().equals(LoginType.KAKAO.name())) {
                 kakaoMemberId = oAuthService.getKakaoMemberId(reqDTO.getKakaoAccessToken());
+                if (isExistKakaoMemberId(kakaoMemberId)) {
+                    throw new BaseException(ALREADY_EXIST_KAKAO_MEMBER_ID);
+                }
             }
+
             // 일반 로그인인 경우
-            else{
+            else {
                 password = passwordEncoder.encode(reqDTO.getPassword());
             }
 
@@ -116,9 +135,11 @@ public class MemberService {
         }
     }
 
+
     /**
      * phoneNumber 존재 여부 검사
      */
+    @Transactional(readOnly = true)
     public boolean isExistPhoneNumber(String phoneNumber) throws BaseException {
         try {
             return memberRepository.existsByPhoneNumber(phoneNumber);
@@ -132,6 +153,7 @@ public class MemberService {
     /**
      * username 존재 여부 검사
      */
+    @Transactional(readOnly = true)
     public boolean isExistUsername(String username) throws BaseException {
         try {
             return memberRepository.existsByUsername(username);
@@ -158,22 +180,22 @@ public class MemberService {
     /**
      * 해당 휴대폰 번호로 인증번호 발송
      */
+    @Transactional(readOnly = true)
     public void sendAuthNum(String phoneNumber) throws BaseException {
-        try{
+        try {
             // 휴대폰 번호 중복 검사
-            if(isExistPhoneNumber(phoneNumber)){
+            if (isExistPhoneNumber(phoneNumber)) {
                 throw new BaseException(ALREADY_EXIST_PHONE_NUMBER);
             }
 
             // 인증번호 전송
             String authNum = createRandomAuthNum(phoneNumber);
-            String content = "[Instagram] 6자리 인증번호 ["+authNum+"] 입력해주세요.";
+            String content = "[Instagram] 6자리 인증번호 [" + authNum + "] 입력해주세요.";
             smsService.sendSms(phoneNumber, content);
 
             // 인증번호 Redis에 저장
             redisService.setSignupAuthNumInRedis(phoneNumber, authNum);
-        }
-        catch (BaseException e){
+        } catch (BaseException e) {
             throw e;
         }
     }
@@ -181,11 +203,12 @@ public class MemberService {
     /**
      * 6자리 랜덤 인증번호 생성
      */
-    public String createRandomAuthNum(String phoneNumber){
+    @Transactional(readOnly = true)
+    public String createRandomAuthNum(String phoneNumber) {
         String authNum = "";
         random.setSeed(System.currentTimeMillis() + Long.valueOf(phoneNumber));
 
-        for(int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++) {
             authNum += String.valueOf(random.nextInt(10));
         }
 
@@ -195,19 +218,37 @@ public class MemberService {
     /**
      * 휴대폰 인증번호 검증
      */
-    public void checkAuthNum(String phoneNumber, String authNum) throws BaseException{
-        try{
+    @Transactional(readOnly = true)
+    public void checkAuthNum(String phoneNumber, String authNum) throws BaseException {
+        try {
             // 휴대폰 번호 중복 검사
-            if(isExistPhoneNumber(phoneNumber)){
+            if (isExistPhoneNumber(phoneNumber)) {
                 throw new BaseException(ALREADY_EXIST_PHONE_NUMBER);
             }
 
             boolean result = redisService.compareSignupAuthNumInRedis(phoneNumber, authNum);
-            if (result == false){
+            if (result == false) {
                 throw new BaseException(INVALID_AUTH_NUM);
             }
+        } catch (BaseException e) {
+            throw e;
         }
-        catch (BaseException e){
+    }
+
+    /**
+     * 계정 공개 여부 변경
+     * 비공개 -> 공개 or 공개 -> 비공개
+     */
+    public ChangeOpenStatusResDTO changeOpenStatus(Long memberId) throws BaseException {
+        try {
+            Member member = findMemberById(memberId);
+            OpenStatus changedOpenStatus = member.changeOpenStatus();
+            save(member);
+            return ChangeOpenStatusResDTO.builder()
+                    .openStatus(changedOpenStatus.name())
+                    .message("계정 상태를 " + changedOpenStatus.name() + "으로 변경했습니다.")
+                    .build();
+        } catch (BaseException e) {
             throw e;
         }
     }
