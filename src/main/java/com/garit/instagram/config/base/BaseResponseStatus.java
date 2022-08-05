@@ -64,6 +64,15 @@ public enum BaseResponseStatus {
     NOT_EXIST_KAKAO_ACCESS_TOKEN_IN_KAKAO_SIGNUP(false, 4223, "kakao 소셜 회원가입인 경우, kakaoAccessToken을 필수로 입력해야 합니다."),
 
     ALREADY_EXIST_KAKAO_MEMBER_ID(false, 4224, "이미 회원가입이 완료된 멤버입니다. => 이미 존재하는 kakaoMemberId"),
+
+
+    /**
+     * 4300 : 팔로우 관련 에러
+     */
+    NOT_EXIST_FOLLOW(false, 4300, "존재하는 않는 Follow입니다."),
+    NOT_EXIST_TARGET_MEMBER_ID(false, 4301, "targetMemberId를 입력해주세요"),
+    NOT_HAVE_PERMISSION_TO_READ_FOLLOW(false, 4302, "상대방의 팔로잉/팔로워를 조회할 권한이 없습니다. (서로 팔로우한 관계가 아님)"),
+    INVALID_FOLLOW_CATEGORY(false, 4303, "category로 [follower] 또는 [following]을 입력해주세요.")
     ;
 
 

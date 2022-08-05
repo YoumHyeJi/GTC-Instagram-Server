@@ -1,7 +1,12 @@
 package com.garit.instagram.utils;
 
+import com.garit.instagram.domain.follow.FollowCategory;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.garit.instagram.domain.follow.FollowCategory.follower;
+import static com.garit.instagram.domain.follow.FollowCategory.following;
 
 public class ValidationRegex {
     /**
@@ -26,4 +31,11 @@ public class ValidationRegex {
         return matcher.find();
     }
 
+    public static boolean isRegexFollowCategory(String target){
+        // follower 또는 following
+        String regex = "^("+ follower.name() +"|"+following.name()+")$";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(target);
+        return matcher.find();
+    }
 }

@@ -21,7 +21,8 @@ repositories {
 dependencies {
 	// web - tomcat, webmvc 라이브러리를 가져옴
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.jetbrains:annotations:20.1.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	// lombok
 	compileOnly 'org.projectlombok:lombok'
