@@ -77,6 +77,16 @@ public enum BaseResponseStatus {
     NOT_EXIST_FOLLOW_ID(false, 4304, "followId를 입력해주세요."),
     NOT_EXIST_CONFIRM_FLAG(false, 4305, "confirmFlag를 입력해주세요. (팔로우 요청 승인 : true / 팔로우 요청 거절 : false)"),
 
+
+    /**
+     * 4400 : 게시물 관련 에러
+     */
+    OVER_POST_CONTENT_MAX_SIZE(false, 4400, "게시물 내용(postContent)이 1000자를 넘었습니다. (최대 1000자)"),
+    NOT_EXIST_POST_ATTACHMENT_URL(false, 4401, "게시물 첨부파일 url(postAttachmentUrl)을 입력해주세요."),
+    NOT_EXIST_POST_ATTACHMENT_TYPE(false, 4402, "게시물 첨부파일 type(postAttachmentType)을 입력해주세요."),
+    INVALID_POST_ATTACHMENT_TYPE(false, 4403, "게시물 첨부파일 type(postAttachmentType)으로 [PHOTO 또는 VIDEO]를 입력해주세요."),
+    NOT_EXIST_POST_ATTACHMENT_LIST(false, 4404, "게시물 첨부파일 리스트(postAttachmentList)를 입력해주세요."),
+    OVER_POST_ATTACHMENT_LIST_SIZE(false, 4405, "게시물 첨부파일 리스트(postAttachmentList)에 첨부파일은 최소 1개, 최대 5개까지 입력가능합니다."),
     ;
 
 

@@ -1,7 +1,6 @@
 package com.garit.instagram.service;
 
 import com.garit.instagram.config.base.BaseException;
-import com.garit.instagram.domain.deviceToken.DeviceToken;
 import com.garit.instagram.domain.member.LoginType;
 import com.garit.instagram.domain.member.Member;
 import com.garit.instagram.domain.member.MemberRepository;
