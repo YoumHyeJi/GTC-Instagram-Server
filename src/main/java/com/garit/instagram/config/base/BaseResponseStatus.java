@@ -72,7 +72,11 @@ public enum BaseResponseStatus {
     NOT_EXIST_FOLLOW(false, 4300, "존재하는 않는 Follow입니다."),
     NOT_EXIST_TARGET_MEMBER_ID(false, 4301, "targetMemberId를 입력해주세요"),
     NOT_HAVE_PERMISSION_TO_READ_FOLLOW(false, 4302, "상대방의 팔로잉/팔로워를 조회할 권한이 없습니다. (서로 팔로우한 관계가 아님)"),
-    INVALID_FOLLOW_CATEGORY(false, 4303, "category로 [follower] 또는 [following]을 입력해주세요.")
+    INVALID_FOLLOW_CATEGORY(false, 4303, "category로 [follower] 또는 [following]을 입력해주세요."),
+
+    NOT_EXIST_FOLLOW_ID(false, 4304, "followId를 입력해주세요."),
+    NOT_EXIST_CONFIRM_FLAG(false, 4305, "confirmFlag를 입력해주세요. (팔로우 요청 승인 : true / 팔로우 요청 거절 : false)"),
+
     ;
 
 

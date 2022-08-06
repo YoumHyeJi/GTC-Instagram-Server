@@ -6,6 +6,7 @@ import com.garit.instagram.domain.follow.FollowCategory;
 import com.garit.instagram.domain.follow.FollowRepository;
 import com.garit.instagram.domain.follow.FollowStatus;
 import com.garit.instagram.domain.follow.dto.ChangeFollowResDTO;
+import com.garit.instagram.domain.follow.dto.ConfirmFollowRequestResDTO;
 import com.garit.instagram.domain.follow.dto.FollowMemberDTO;
 import com.garit.instagram.domain.follow.dto.GetFollowMemberResDTO;
 import com.garit.instagram.domain.member.Member;
@@ -82,17 +83,20 @@ public class FollowService {
             // 2. 아직 존재하지 않는 Follow 관계인 경우
             else {
                 Follow follow = Follow.createFollow(myMember, targetMember);
+                result = ChangeFollowResDTO.builder()
+                        .followStatus(WAIT)
+                        .message("[팔로우 요청]을 성공적으로 수행했습니다.")
+                        .build();
 
                 // 2-1. 상대방이 공개 계정인 경우, 팔로우 상태를 ACTIVE로 변경
                 if (targetMember.getOpenStatus() == OpenStatus.PUBLIC) {
                     follow.changeFollowStatus(ACTIVE);
+                    result = ChangeFollowResDTO.builder()
+                            .followStatus(ACTIVE)
+                            .message("[팔로우]를 성공적으로 수행했습니다.")
+                            .build();
                 }
                 save(follow);
-
-                result = ChangeFollowResDTO.builder()
-                        .followStatus(ACTIVE)
-                        .message("[팔로우]를 성공적으로 수행했습니다.")
-                        .build();
             }
 
             return result;
@@ -150,7 +154,11 @@ public class FollowService {
         try {
             return followRepository.findFollowByFollowerAndFollowed(follower, followed)
                     .orElseThrow(() -> new BaseException(NOT_EXIST_FOLLOW));
-        } catch (Exception e) {
+        }
+        catch (BaseException e){
+            throw e;
+        }
+        catch (Exception e) {
             e.printStackTrace();
             log.error("findFollowByFollowerAndFollowed() : followRepository.findFollowByFollowerAndFollowed() 실행 중 데이터베이스 에러 발생");
             throw new BaseException(DATABASE_ERROR);
@@ -158,6 +166,7 @@ public class FollowService {
     }
 
     /**
+     * 팔로워 & 팔로잉 조회
      * 1. 팔로워 조회 = targetMember를 팔로우 하는 사람들 / category = follower
      * 2. 팔로잉 조회 = targetMember가 팔로우 하는 사람들 / category = following
      */
@@ -215,7 +224,7 @@ public class FollowService {
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("");
+            log.error("getFollowerMemberResultByPaging() : followRepository.getFollowerMember() 실행 중 데이터베이스 에러 발생");
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -245,7 +254,73 @@ public class FollowService {
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("");
+            log.error("getFollowedMemberResultByPaging() : followRepository.getFollowedMember() 실행 중 데이터베이스 에러 발생");
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    /**
+     * 3. 팔로우 요청 조회 = 내게 팔로우 요청을 보낸 사람들
+     */
+    @Transactional(readOnly = true)
+    public GetFollowMemberResDTO getFollowRequestMember(Long myMemberId, Long lastFollowId) throws BaseException {
+        try{
+            Member me = memberService.findMemberById(myMemberId);
+
+            return getFollowerMemberResultByPaging(me, WAIT, lastFollowId);
+        }
+        catch (BaseException e){
+            throw e;
+        }
+    }
+
+    /**
+     * 팔로우 요청 승인 & 팔로우 요청 거절
+     */
+    public ConfirmFollowRequestResDTO confirmFollowRequest(Long myMemberId, Long followId, Boolean confirmFlag) throws BaseException{
+        try{
+            Member me = memberService.findMemberById(myMemberId);
+            Follow follow = findFollowByIdAndFollowedAndFollowStatus(followId, me, WAIT);
+            ConfirmFollowRequestResDTO result;
+
+            if (confirmFlag){   // 팔로우 요청 승인
+                follow.changeFollowStatus(ACTIVE);
+                result = ConfirmFollowRequestResDTO.builder()
+                        .followId(followId)
+                        .followStatus(ACTIVE.name())
+                        .message("팔로우 요청을 승인했습니다.")
+                        .build();
+            }
+            else{               // 팔로우 요청 거절
+                follow.changeFollowStatus(INACTIVE);
+                result = ConfirmFollowRequestResDTO.builder()
+                        .followId(followId)
+                        .followStatus(INACTIVE.name())
+                        .message("팔로우 요청을 거절했습니다.")
+                        .build();
+            }
+
+            save(follow);
+            return result;
+        } catch (BaseException e){
+            throw e;
+        }
+    }
+
+    /**
+     * followId, followd, followStatus로 Follow 엔티티 조회
+     */
+    public Follow findFollowByIdAndFollowedAndFollowStatus(Long followId, Member followed, FollowStatus followStatus) throws BaseException {
+        try{
+            return followRepository.findFollowByIdAndFollowedAndFollowStatus(followId, followed, followStatus)
+                    .orElseThrow(() -> new BaseException(NOT_EXIST_FOLLOW));
+        }
+        catch (BaseException e){
+            throw e;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            log.error("findFollowByIdAndFollowedAndFollowStatus() : followRepository.findFollowByIdAndFollowedAndFollowStatus() 실행 중 데이터베이스 에러 발생");
             throw new BaseException(DATABASE_ERROR);
         }
     }

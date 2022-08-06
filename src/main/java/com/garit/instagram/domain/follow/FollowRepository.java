@@ -16,7 +16,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     boolean existsByFollowerAndFollowedAndFollowStatus(Member follower, Member followed, FollowStatus followStatus);
 
     Optional<Follow> findFollowByFollowerAndFollowed(Member follower, Member followed);
-
+    Optional<Follow> findFollowByIdAndFollowedAndFollowStatus(Long followId, Member followed, FollowStatus followStatus);
 
     /**
      * 1. 팔로워 조회 = targetMember를 팔로우 하는 사람들
