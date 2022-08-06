@@ -21,6 +21,29 @@ spring:
       hibernate:
         format_sql: true
 
+  redis:
+    host: ${secrets.DEV_REDIS_HOST}
+    port: ${secrets.DEV_REDIS_PORT}
+
+
+jwt:
+  secret-key: ${secrets.DEV_JWT_SECRET_KEY}
+  access-token-expire-time: ${secrets.DEV_JWT_ACCESS_TOKEN_EXPIRE_TIME}
+  refresh-token-expire-time: ${secrets.DEV_JWT_REFRESH_TOKEN_EXPIRE_TIME}
+  refresh-token-reissue-time: ${secrets.DEV_JWT_REFRESH_TOKEN_REISSUE_TIME}
+  access-token-header-name: ${secrets.DEV_JWT_ACCESS_TOKEN_HEADER_NAME}
+  refresh-token-header-name: ${secrets.DEV_JWT_REFRESH_TOKEN_HEADER_NAME}
+  member-id-header-name: ${secrets.DEV_MEMBER_ID_HEADER_NAME}
+
+kakao:
+  client-id: ${secrets.DEV_KAKAO_CLIENT_ID}
+  redirect-uri: ${secrets.DEV_KAKAO_REDIRECT_URI}
+
+sms:
+  service-id: ${secrets.DEV_SMS_SERVICE_ID}
+  access-key: ${secrets.DEV_SMS_ACCESS_KEY}
+  secret-key: ${secrets.DEV_SMS_SECRET_KEY}
+
 logging:
   level:
     org.hibernate.SQL: debug

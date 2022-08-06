@@ -21,7 +21,8 @@ repositories {
 dependencies {
 	// web - tomcat, webmvc 라이브러리를 가져옴
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.jetbrains:annotations:20.1.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	// lombok
 	compileOnly 'org.projectlombok:lombok'
@@ -40,6 +41,23 @@ dependencies {
 	// validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	// security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	// jwt
+	implementation(group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0')
+	implementation('io.jsonwebtoken:jjwt:0.9.0')
+
+	// redis
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis'
+	implementation group: 'io.lettuce', name: 'lettuce-core'
+
+	// gson
+	implementation 'com.google.code.gson:gson:2.8.7'
+
+	// httpclient
+	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.12'
 
 }
 

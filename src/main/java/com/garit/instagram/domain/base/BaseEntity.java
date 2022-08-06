@@ -12,15 +12,23 @@ public abstract class BaseEntity {
 
     @NotNull
     @Enumerated(value = EnumType.STRING)
-    private Status status;
+    protected Status status;
 
     @NotNull
     @Column(name = "create_date")
-    private LocalDateTime createDate;
+    protected LocalDateTime createDate;
 
     @Column(name = "update_date")
-    private LocalDateTime updateDate;
+    protected LocalDateTime updateDate;
 
     @Column(name = "delete_date")
-    private LocalDateTime deleteDate;
+    protected LocalDateTime deleteDate;
+
+    public void changeUpdateAt(){
+        this.updateDate = LocalDateTime.now();
+    }
+
+    public void changeDeleteAt(){
+        this.deleteDate = LocalDateTime.now();
+    }
 }

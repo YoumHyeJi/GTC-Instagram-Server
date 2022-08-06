@@ -1,11 +1,14 @@
 package com.garit.instagram.domain.deviceToken;
 
 import com.garit.instagram.domain.base.BaseEntity;
+import com.garit.instagram.domain.base.Status;
 import com.garit.instagram.domain.member.Member;
 import lombok.Getter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
@@ -41,5 +44,18 @@ public class DeviceToken extends BaseEntity {
     @NotNull
     private DeviceTokenStatus deviceTokenStatus;
 
+    /**
+     * 생성 메서드
+     */
+    public static DeviceToken createDeviceToken(Member member, String deviceTokenValue){
+        DeviceToken deviceToken = new DeviceToken();
+        deviceToken.member = member;
+        deviceToken.deviceTokenValue = deviceTokenValue;
+        deviceToken.deviceTokenStatus = DeviceTokenStatus.ACTIVE;
+        deviceToken.status = Status.VALID;
+        deviceToken.createDate = LocalDateTime.now();
+        deviceToken.updateDate = LocalDateTime.now();
+        return deviceToken;
+    }
 }
 

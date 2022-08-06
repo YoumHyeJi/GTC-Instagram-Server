@@ -1,6 +1,7 @@
 package com.garit.instagram.domain.member;
 
 import com.garit.instagram.domain.base.BaseEntity;
+import com.garit.instagram.domain.base.Status;
 import com.garit.instagram.domain.member.LoginType;
 import lombok.Getter;
 
@@ -18,14 +19,13 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
+    @Column(name = "kakao_member_id", unique = true)
+    private Long kakakoMemberId;
+
     @Enumerated(value = EnumType.STRING)
     @Column(name = "login_type")
     @NotNull
     private LoginType loginType;
-
-    @NotNull
-    @Column(unique = true, length = 50)
-    private String identifier;
 
     @Enumerated(value = EnumType.STRING)
     @NotNull
@@ -82,4 +82,54 @@ public class Member extends BaseEntity {
     @Column(name = "member_status")
     @NotNull
     private MemberStatus memberStatus;
+
+    @Transient
+    private String deviceTokenValue;
+
+    public void setDeviceTokenValue(String deviceTokenValue) {
+        this.deviceTokenValue = deviceTokenValue;
+    }
+
+    /**
+     * 생성 메서드
+     */
+    public static Member createMember(LoginType loginType, Long kakaoMemberId, String password, String name, String username, String phoneNumber, LocalDate birthDate){
+        Member member = new Member();
+        member.loginType = loginType;
+        member.kakakoMemberId = kakaoMemberId;
+        member.role = MemberRole.ROLE_MEMBER;
+        member.password = password;
+        member.name = name;
+        member.username = username;
+        member.phoneNumber = phoneNumber;
+        member.birthDate = birthDate;
+        member.age = calculateAge(birthDate);
+        member.openStatus = OpenStatus.PUBLIC;
+        member.nameUpdateCount = 0;
+        member.usernameUpdateCount = 0;
+        member.loginDate = LocalDateTime.now();
+        member.memberStatus = MemberStatus.ACTIVE;
+        member.status = Status.VALID;
+        member.createDate = LocalDateTime.now();
+        member.updateDate = LocalDateTime.now();
+
+        return member;
+    }
+
+    public static Integer calculateAge(LocalDate birthDate){
+        return LocalDate.now().getYear() - birthDate.getYear() + 1;
+    }
+
+    public OpenStatus changeOpenStatus(){
+        // 현재 상태가 공개인 경우, 비공개로 변경
+        if (this.openStatus == OpenStatus.PUBLIC){
+            this.openStatus = OpenStatus.PRIVATE;
+            return OpenStatus.PRIVATE;
+        }
+        // 현재 상태가 비공개인 경우, 공개로 변경
+        else{
+            this.openStatus = OpenStatus.PUBLIC;
+            return OpenStatus.PUBLIC;
+        }
+    }
 }
