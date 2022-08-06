@@ -43,6 +43,7 @@ sms:
   service-id: ${secrets.PROD_SMS_SERVICE_ID}
   access-key: ${secrets.PROD_SMS_ACCESS_KEY}
   secret-key: ${secrets.PROD_SMS_SECRET_KEY}
+  sender-phone-number: ${secrets.PROD_SENDER_PHONE_NUMBER}
 
 logging:
   level:
