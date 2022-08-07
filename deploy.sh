@@ -3,7 +3,7 @@
 REPOSITORY=/home/ubuntu/GTC-Instagram-Server
 cd $REPOSITORY
 
-APP_NAME=GTC-Instagram-Server
+APP_NAME=instagram
 JAR_NAME=$(ls $REPOSITORY/build/libs/ | grep '.jar' | tail -n 1)
 JAR_PATH=$REPOSITORY/build/libs/$JAR_NAME
 
