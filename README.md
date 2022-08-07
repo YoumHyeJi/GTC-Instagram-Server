@@ -6,3 +6,4 @@ This is GTC-Instagram-Server for Spring boot.
 
 # 2차 자동 배포 (2022-08-06)
 * 회원가입, 로그인, 팔로우 기능 완료 
+* dev용 데이터베이스 생성
