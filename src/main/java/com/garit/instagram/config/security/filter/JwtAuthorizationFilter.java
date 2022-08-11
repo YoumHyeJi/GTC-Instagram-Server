@@ -34,6 +34,37 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private final JwtService jwtService;
     private final MemberService memberService;
 
+    private static final String[] PERMIT_URI_ARRAY = {
+            /* guest 권한 */
+            "/role-guest/api",
+
+            /* 카카오 소셜 로그인 */
+            "/favicon.ico",
+
+            /* swagger v2 */
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars",
+
+            /* swagger v3 */
+            "/v3/api-docs",
+            "/swagger-ui"
+    };
+
+    private boolean checkUri(String requestUri){
+        for (String permitUri : PERMIT_URI_ARRAY) {
+            if(requestUri.startsWith(permitUri)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     @Autowired
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager, HttpResponseService httpResponseService, JwtService jwtService, MemberService memberService) {
         super(authenticationManager);
@@ -50,7 +81,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         /**
          * guest 권한이 필요한 요청인 경우
          */
-        if (request.getRequestURI().startsWith("/role-guest/api") || request.getRequestURI().startsWith("/favicon.ico")){
+        if (checkUri(request.getRequestURI())) {
             log.info("guest 권한이 필요한 주소가 요청이 됨 => " + request.getRequestURI());
             chain.doFilter(request, response);
             return;
@@ -64,10 +95,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String memberId = request.getHeader(MEMBER_ID_HEADER_NAME);
         String jwtAccessToken = jwtService.getJwtAccessToken(request);
 
-        if (checkMemberIdInHeader(response, memberId) && checkJwtAccessTokenInHeader(response, jwtAccessToken)){
+        if (checkMemberIdInHeader(response, memberId) && checkJwtAccessTokenInHeader(response, jwtAccessToken)) {
             Member member = findMember(response, memberId, jwtAccessToken);
 
-            if(member != null){
+            if (member != null) {
                 PrincipalDetails principalDetails = new PrincipalDetails(member);
 
                 // JWT 토큰 서명을 통해서, 서명이 정상이면 Authentication 객체를 만들어준다.
@@ -102,13 +133,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     // header에서 jwtAccessToken을 뽑아, 유효한 jwtAccessToken인지 검사
     private boolean checkJwtAccessTokenInHeader(HttpServletResponse response, String jwtAccessToken) throws BaseException {
-        if(jwtAccessToken == null){
+        if (jwtAccessToken == null) {
             log.error("access token을 헤더에 입력해주세요.");
             httpResponseService.errorRespond(response, NOT_EXIST_ACCESS_TOKEN_IN_HEADER);
             return false;
         }
 
-        if (jwtService.validateToken(jwtAccessToken) == false){
+        if (jwtService.validateToken(jwtAccessToken) == false) {
             log.error("만료된 access token입니다.");
             httpResponseService.errorRespond(response, INVALID_ACCESS_TOKEN);
             return false;
@@ -134,8 +165,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             }
 
             return memberService.findMemberById(Long.valueOf(memberIdInHeader));
-        }
-        catch (BaseException e){
+        } catch (BaseException e) {
             httpResponseService.errorRespond(response, e.getStatus());
             return null;
         }

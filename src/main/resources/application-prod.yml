@@ -25,6 +25,10 @@ spring:
     host: ${secrets.PROD_REDIS_HOST}
     port: ${secrets.PROD_REDIS_PORT}
 
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
 
 jwt:
   secret-key: ${secrets.PROD_JWT_SECRET_KEY}

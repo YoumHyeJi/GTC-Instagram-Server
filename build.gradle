@@ -59,6 +59,8 @@ dependencies {
 	// httpclient
 	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.12'
 
+	// swagger
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 }
 
 tasks.named('test') {
